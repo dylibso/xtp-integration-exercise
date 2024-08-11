@@ -1,0 +1,36 @@
+{
+  "name": "xtp-onboarding-exercise",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js --dev",
+    "start": "node server.js",
+    "build": "vite build",
+    "lint": "eslint . --ext .js,.jsx --fix",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^2.0.3",
+    "@chatscope/chat-ui-kit-styles": "^1.4.0",
+    "@dylibso/xtp": "^0.0.0-rc7",
+    "@fastify/vite": "^6.0.7",
+    "fastify": "^4.24.3",
+    "fastify-sse-v2": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/eslint-parser": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.54.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.33.2",
+    "vite": "^5.3.3"
+  }
+}
