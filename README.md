@@ -43,10 +43,9 @@ You should see the following:
 You are logged into your customer Acme Inc's instance and it's just you and the bot.
 
 Type some messages into the chat and you'll see the bot does not respond. The bot only responds to
-slash commands. To try some built-in commands start your message with `/`. You'll see a popup with
-a few built-in commands. Try `/countvowels Hello World`. The bot should respond with `countvowels: 3`
+slash commands. To try some built-in commands start your message with `/`. You'll see a popup with built-in commands. Try `/countvowels Hello World`. The bot should respond with `countvowels: 3`
 
-Try out a few of the built-in commands by typing “/” into the message box. You should see a few goodies such as countvowels and holdbutts
+Try out the built-in commands by typing “/” into the message box. You should at least see goodies such as `countvowels`.
 
 ![count vowels](docs/count-vowels.png)
 
@@ -138,29 +137,29 @@ First let's start by created a client to connect to the XTP API. Paste this on t
 import createClient from '@dylibso/xtp'
 
 const xtpClient = await createClient({
-  token: String(process.env.XTP_TOKEN),
   appId: '<app-id>',
+  token: String(process.env.XTP_TOKEN),
   // typescript plug-ins need WASI, this is a minor detail that isn't important at the moment
   useWasi: true
 })
 ```
 
-> **Note**: Generate a token here: [https://xtp.dylibso.com/tokens](https://xtp.dylibso.com/tokens).
-> This is a secret, so set an envirionment variable XTP_TOKEN and restart the server.
+> **Note**: Get your app id by clicking on your app from the home page in dashboard [https://xtp.dylibso.com/](https://xtp.dylibso.com). Replace `<app-id>` with your app id.
 
-> **Note**: Get your app id by clicking on your app from the home page in dashboard [https://xtp.dylibso.com/](https://xtp.dylibso.com).
+> **Note**: Generate a token here: [https://xtp.dylibso.com/tokens](https://xtp.dylibso.com/tokens).
+> This is a secret. Store it in the environment variable XTP_TOKEN and restart the server.
 
 Now that the client is initialized, there are two places we need to extend:
 
 1. Where the available command names are listed
 2. Where the messages are processed
 
-For the first, let's modify the `getCommands()`. This currently returns the list of built-in command names.
+For the first, let's extend `getCommands()`. This currently returns the list of built-in command names.
 We will append on the result of `xtpClient.listAvailablePlugins()` which will return the commands installed at the
 logged in guest account.
 
 ```javascript
-const GUEST_KEY = 'acme-inc'
+const GUEST_KEY = 'acme-corp'
 const EXT_NAME = 'SlashCommand'
 
 // create this helper function
@@ -182,7 +181,7 @@ export async function getCommands() {
 }
 ```
 
-Next we need to execute these custom commands. To do that we must modify `commandHandler`:
+Next we need to add the ability to execute these custom commands. To do that we must modify `commandHandler`:
 
 
 ```javascript
@@ -205,7 +204,7 @@ async function runSlashCommand(commandName, message) {
   return JSON.parse(result)
 }
 
-// modify commandHanlder
+// modify commandHandler
 export async function commandHandler(message) {
 // ...
 
@@ -245,7 +244,7 @@ Select `Invite Guest` from the Guests section of the XTP dashboard and fill in t
 
 Use an email address that you have access to, as you’ll need to follow the invite link in order to complete the registration process.
 
-Once you’ve finished registration and setup a new username and password, go ahead and log out of your Admin account in the XTP Dashboard.
+Log out of your Admin account and click the invite link and register a Guest account.
 
 ## Step 4: Deploy a Plugin
 
@@ -306,7 +305,7 @@ export function handleMessageImpl(input: Message): Message {
 This will get called by Yak when it gets the `/loudify` command. So all we're doing returning a new message
 uppercasing the body of the input message.
 
-Now to install the code in Yak, just run these two commands:
+Now to install the code in Yak, from the plugin directory, run these two commands:
 
 ```
 # Build the codebase
