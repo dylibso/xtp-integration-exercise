@@ -162,27 +162,16 @@ logged in guest account.
 const GUEST_KEY = 'acme-corp'
 const EXT_NAME = 'SlashCommand'
 
-// create this helper function
-async function listAvailableSlashCommands() {
-  try {
-    return await xtpClient.listAvailablePlugins(
-      EXT_NAME,
-      GUEST_KEY, 
-    )
-  } catch (e) {
-    console.error(e)
-    return []
-  }
-}
-
 // change this implementation to include guest commands
 export async function getCommands() {
-  return Object.keys(BUILTIN_COMMANDS).concat(await listAvailableSlashCommands())
+  return Object.keys(BUILTIN_COMMANDS).concat(await xtpClient.listAvailablePlugins(
+    EXT_NAME,
+    GUEST_KEY,
+  ))
 }
 ```
 
 Next we need to add the ability to execute these custom commands. To do that we must modify `commandHandler`:
-
 
 ```javascript
 // add this helper function
@@ -213,7 +202,10 @@ export async function commandHandler(message) {
     botMessage = command(message)
   } else { // add this else clause
     // if we fail to find the command in the built-ins, let's check xtp
-    const pluginCommands = await listAvailableSlashCommands()
+    const pluginCommands = await xtpClient.listAvailablePlugins(
+      EXT_NAME,
+      GUEST_KEY,
+    )
     if (pluginCommands.includes(commandName)) {
       // running a plugin is no different than calling a normal function
       // but it's sandboxed and language independent thanks to Wasm
