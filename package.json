@@ -12,10 +12,11 @@
   "dependencies": {
     "@chatscope/chat-ui-kit-react": "^2.0.3",
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
-    "@dylibso/xtp": "^0.0.0-rc7",
+    "@dylibso/xtp": "^0.0.0-rc8",
     "@fastify/vite": "^6.0.7",
     "fastify": "^4.24.3",
     "fastify-sse-v2": "^4.0.0",
+    "pino-pretty": "^11.2.2",
     "react": "^18.3.1",
     "react-dom": "^18.2.0"
   },

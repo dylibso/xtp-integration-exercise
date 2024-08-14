@@ -45,7 +45,18 @@ class EventStream {
 const EVENTS = new EventStream()
 
 export async function main(dev) {
-  const server = Fastify({ logger: true })
+  const server = Fastify({
+    logger: {
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          colorize: false,
+          translateTime: false,
+          ignore: 'pid,hostname',
+        }
+      }
+    }
+  })
 
   await server.register(FastifyVite, {
     root: import.meta.url,
