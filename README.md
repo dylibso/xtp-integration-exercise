@@ -177,7 +177,7 @@ Next we need to add the ability to execute these custom commands. To do that we 
 // add this helper function
 async function runSlashCommand(commandName, message) {
   // our Extension Point is:             `SlashCommand`
-  // our export that we want to call is: `handleCommand`
+  // our export that we want to call is: `handleMessage`
   const pluginFunc = xtpClient.extensionPoints.SlashCommand.handleMessage
 
   const result = await pluginFunc(
