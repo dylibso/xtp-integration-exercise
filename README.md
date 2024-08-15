@@ -17,6 +17,12 @@ To meet this demand, you will add an extension system to your platform using XTP
 - [extism-js compiler](https://github.com/extism/js-pdk?tab=readme-ov-file#install-the-compiler)
 - An ice cold coffee or other beverage of choice
 
+## Video Walkthrough
+
+If you're not able to run through this guide yourself yet, watch one of us go through the steps in this video:
+
+[![Watch the video](https://img.youtube.com/vi/GQZ1Wcy1cQM/maxresdefault.jpg)](https://youtu.be/GQZ1Wcy1cQM?t=914)
+
 ## Step 1: Clone the Repository and Launch Yak
 
 Clone [this repository](https://github.com/dylibso/xtp-integration-exercise) which contains the code for the Yak platform.
