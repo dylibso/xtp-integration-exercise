@@ -69,44 +69,10 @@ export async function main(dev) {
     return reply.html()
   })
 
-  const SESSIONS = new Map();
-  const USERS = new Map();
-
-  server.post('/login', (req, reply) => {
-    const { nick } = req.body
-    if (nick === undefined) {
-      reply.status(403).send({ success: false, reason: 'No nick provided' })
-      return
-    }
-    if (USERS.has(nick)) {
-      reply.status(403).send({ success: false, reason: 'Cannot login as existing user' })
-      return
-    }
-    let sid;
-    do {
-      sid = crypto.randomBytes(16).toString('hex')
-    } while (SESSIONS.has(sid));
-    USERS.set(nick, sid)
-    SESSIONS.set(sid, nick)
-    reply.header('Set-Cookie', 'sid=' + sid).status(201).send({ success: true })
-  })
-
   server.post('/messages', async (req, reply) => {
-    let [key, value] = req.headers.cookie.split("=")
-    if (key !== 'sid') {
-      reply.status(403).send({ success: false, reason: 'Cannot send message without being logged in' })
-      return
-    }
-    const sessionUser = SESSIONS.get(value)
-    if (sessionUser === undefined) {
-      reply.status(403).send({ success: false, reason: 'Invalid session id' })
-      return
-    }
+    // we're just assuming that they are who they say they are
+    // that's okay for this demo
     let { nick, body } = req.body;
-    if (sessionUser !== nick) {
-      reply.status(403).send({ success: false, reason: 'Tried to send a message as another user' })
-      return
-    }
 
     // remove trailing spaces
     const endre = new RegExp('(&nbsp;)*\\s*(\\<br\\>)*$');
