@@ -234,46 +234,57 @@ From the Yak side we’re now all ready to go. See how easy that was?! Now let�
 
 In order for the Acme company to be able to push plugins to your newly established Extension Point, they’ll need an [XTP User Account](https://docs.xtp.dylibso.com/docs/overview#user-account) that has [Guest](https://docs.xtp.dylibso.com/docs/overview#guest) access to your [XTP Host App](https://docs.xtp.dylibso.com/docs/overview#host-app) (i,.e., Yak). 
 
-> **Note**: Guests should ideally be invited programatically from the API, but here we will use the UI for demonstration purposes.
+Normally the guest would be one of your users and a third party, to make testing easier, we're going to invite ourselves as a guest.
 
-Select `Invite Guest` from the Guests section of the XTP dashboard and fill in the form with the following information:
-
-![New Guest](docs/new-guest.png)
-
-Use an email address that you have access to, as you’ll need to follow the invite link in order to complete the registration process.
-
-Log out of your Admin account and click the invite link and register a Guest account.
-
-## Step 4: Deploy a Plugin
-
-Now let’s pretend you’re Acme Inc. (the "Guest" in XTP nomenclature) and deploy a plugin. 
-
-You’ll need the XTP CLI for this. Install it using the install script:
+First you need to install the CLI in your terminal:
 
 ```bash
 curl https://static.dylibso.com/cli/install.sh | sh
 ```
 
-## Step 4a: Authenticate as Acme
+Start by making sure that you're logged into the `xtp` CLI. Running the command
+below will open a browser window asking you to login.
 
-Now authenticate this CLI as the Acme account:
-
-```
-xtp auth login
-```
-
-The browser will open and you can login using the XTP User credentials for the Acme account (not your Yak account).
-
-Double check you’re authenticated as Acme:
-
-```bash
-xtp auth whoami
+```shell
+$ xtp auth login
 ```
 
-You should see the email you used to sign up the Acme account.
 
+Once you've approved the login, close the browser window. Now we can add ourselves
+as a guest. We're going to use `"acme-corp"` as our guest key since we are pretending to be Acme.
 
-## Step 4b: Create the plugin and deploy it 
+> **Note**: A guest key can be any unique identifier for a user that is authorized to run plugins in your app.
+
+First, let's list our apps
+
+```
+$ xtp app list
+  My apps
+  1. My great app (app_01j6ftcefcfshsna0wyny1k9y1)
+```
+
+Then we use the app id to invite ourselves. We're using "acme-corp" as our guest key.
+
+```
+$ export XTP_APP="app_01j6ftcefcfshsna0wyny1k9y1"
+$ export XTP_TOKEN=$(xtp auth token show)
+$ curl -sL \
+  -H "authorization: Bearer $XTP_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"deliveryMethod":"link","guestKey": "acme-corp"}' \
+  -X POST \
+  https://xtp.dylibso.com/api/v1/apps/$XTP_APP/guests
+
+{"status":"ok","link":"https://xtp.dylibso.com/accept-invite?code=AZIMfs6fcnaS-j5KLGI177iMYrPpvc3PHWUR_RbHajqoSNLJZ9Fslg"}
+```
+
+Open that link in a browser to accept the guest invitation.
+
+> **Note**: Guests can also be inivited via the UI, but using the API and link process gives us more control over the end-user experience.
+
+## Step 4: Deploy a Plugin
+
+Now let’s pretend you’re Acme Inc. (the "Guest" in XTP nomenclature) and deploy a plugin. 
 
 Let's create a plugin called `loudify` that will reflect back the incoming message but all caps.
 To generate a new plug-in project for a Slash command, use `plugin init`:
