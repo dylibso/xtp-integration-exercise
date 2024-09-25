@@ -23,6 +23,8 @@ If you're not able to run through this guide yourself yet, watch one of us go th
 
 [![Watch the video](https://img.youtube.com/vi/GQZ1Wcy1cQM/maxresdefault.jpg)](https://youtu.be/GQZ1Wcy1cQM?t=914)
 
+> *Note*: There have been some UI and flow changes to XTP since this video was recorded. Use this README as the definitive guide.
+
 ## Step 1: Clone the Repository and Launch Yak
 
 Clone [this repository](https://github.com/dylibso/xtp-integration-exercise) which contains the code for the Yak platform.
@@ -62,17 +64,15 @@ So let’s integrate XTP into Yak so customers like Acme Inc can augment their Y
 
 ## Step 3: Add a plugin system to Yak using XTP
 
-First, you’ll need to make sure you have an Admin account for an XTP Host App. 
-If you don’t already have one, you can request an invite [here](https://www.getxtp.com/). 
+First, you'll need to make sure [you have an XTP account](https://xtp.dylibso.com/sign-up)
+and [you have created a team](https://xtp.dylibso.com/~/teams/new). You can name your team whatever you want.
 
-With your Admin account in hand, go ahead and login to the [XTP Dashboard](https://xtp.dylibso.com/)
-and let’s setup an [Extension Point](https://docs.xtp.dylibso.com/docs/overview#extension-point)
-for the Host App (i.e., Yak)
+With your new team in hand, let’s setup an [Extension Point](https://docs.xtp.dylibso.com/docs/overview#extension-point)
+for the Host App (i.e., Yak).
 
 ### Step 3a: Configure an Extension Point
 
-Navigate to `Extension Points` and select the `Add Extension Point` button. You should now see the following:
-
+Choose your app, navigate to the `Extension Points` tab and select the `Add Extension Point` button. You should now see the following:
 
 ![new extension point](docs/new-extension-point.png)
 
@@ -119,7 +119,7 @@ components:
 
 Click `Submit` and congrats you now have an Extension Point in Yak!
 
-> **Note**: Don’t worry about the details of this schema just yet; there will be plenty of time for that later. If you're curious, you can find more information [here](https://docs.xtp.dylibso.com/docs/host-usage/xtp-schema).*
+> **Note**: Don’t worry about the details of this schema just yet; there will be plenty of time for that later. If you're curious, you can find more information [here](https://docs.xtp.dylibso.com/docs/host-usage/xtp-schema).
 
 ### Step 3b: Integrate XTP with Yak
 
@@ -150,9 +150,9 @@ const xtpClient = await createClient({
 })
 ```
 
-> **Note**: Get your app id by clicking on your app from the home page in dashboard [https://xtp.dylibso.com/](https://xtp.dylibso.com). Replace `<app-id>` with your app id.
+> **Note**: Get your app id by clicking on the `Detail` tab from your app view. Or pull it out of the url.
 
-> **Note**: Generate a token here: [https://xtp.dylibso.com/tokens](https://xtp.dylibso.com/tokens).
+> **Note**: Generate a token from your user view here: [https://xtp.dylibso.com/tokens](https://xtp.dylibso.com/~/tokens).
 > This is a secret. Store it in the environment variable XTP_TOKEN and restart the server.
 
 Now that the client is initialized, there are two places we need to extend:
@@ -234,46 +234,57 @@ From the Yak side we’re now all ready to go. See how easy that was?! Now let�
 
 In order for the Acme company to be able to push plugins to your newly established Extension Point, they’ll need an [XTP User Account](https://docs.xtp.dylibso.com/docs/overview#user-account) that has [Guest](https://docs.xtp.dylibso.com/docs/overview#guest) access to your [XTP Host App](https://docs.xtp.dylibso.com/docs/overview#host-app) (i,.e., Yak). 
 
-> **Note**: Guests should ideally be invited programatically from the API, but here we will use the UI for demonstration purposes.
+Normally the guest would be one of your users and a third party, to make testing easier, we're going to invite ourselves as a guest.
 
-Select `Invite Guest` from the Guests section of the XTP dashboard and fill in the form with the following information:
+First you need to install the CLI in your terminal:
 
-![New Guest](docs/new-guest.png)
+```bash
+curl https://static.dylibso.com/cli/install.sh | sh
+```
 
-Use an email address that you have access to, as you’ll need to follow the invite link in order to complete the registration process.
+Start by making sure that you're logged into the `xtp` CLI. Running the command
+below will open a browser window asking you to login.
 
-Log out of your Admin account and click the invite link and register a Guest account.
+```shell
+$ xtp auth login
+```
+
+
+Once you've approved the login, close the browser window. Now we can add ourselves
+as a guest. We're going to use `"acme-corp"` as our guest key since we are pretending to be Acme.
+
+> **Note**: A guest key can be any unique identifier for a user that is authorized to run plugins in your app.
+
+First, let's list our apps
+
+```
+$ xtp app list
+  My apps
+  1. My great app (app_01j6ftcefcfshsna0wyny1k9y1)
+```
+
+Then we use the app id to invite ourselves. We're using "acme-corp" as our guest key.
+
+```
+$ export XTP_APP="app_01j6ftcefcfshsna0wyny1k9y1"
+$ export XTP_TOKEN=$(xtp auth token show)
+$ curl -sL \
+  -H "authorization: Bearer $XTP_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"deliveryMethod":"link","guestKey": "acme-corp"}' \
+  -X POST \
+  https://xtp.dylibso.com/api/v1/apps/$XTP_APP/guests
+
+{"status":"ok","link":"https://xtp.dylibso.com/accept-invite?code=AZIMfs6fcnaS-j5KLGI177iMYrPpvc3PHWUR_RbHajqoSNLJZ9Fslg"}
+```
+
+Open that link in a browser to accept the guest invitation.
+
+> **Note**: Guests can also be inivited via the UI, but using the API and link process gives us more control over the end-user experience.
 
 ## Step 4: Deploy a Plugin
 
 Now let’s pretend you’re Acme Inc. (the "Guest" in XTP nomenclature) and deploy a plugin. 
-
-You’ll need the XTP CLI for this. Install it using the install script:
-
-```bash
-curl https://static.dylibso.com/cli/install.sh | sudo sh
-```
-
-## Step 4a: Authenticate as Acme
-
-Now authenticate this CLI as the Acme account:
-
-```
-xtp auth login
-```
-
-The browser will open and you can login using the XTP User credentials for the Acme account (not your Yak account).
-
-Double check you’re authenticated as Acme:
-
-```bash
-xtp auth whoami
-```
-
-You should see the email you used to sign up the Acme account.
-
-
-## Step 4b: Create the plugin and deploy it 
 
 Let's create a plugin called `loudify` that will reflect back the incoming message but all caps.
 To generate a new plug-in project for a Slash command, use `plugin init`:
@@ -289,7 +300,7 @@ xtp plugin init
 
 Open `main.ts` and fill out this implementation for `handleMessageImpl`:
 
-```javascript
+```typescript
 // main.ts
 
 export function handleMessageImpl(input: Message): Message {
@@ -306,10 +317,7 @@ uppercasing the body of the input message.
 Now to install the code in Yak, from the plugin directory, run these two commands:
 
 ```
-# Build the codebase
-xtp plugin build
-
-# Install the plugin
+# Build and install the plugin
 xtp plugin push
 ```
 
