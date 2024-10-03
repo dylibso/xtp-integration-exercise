@@ -239,7 +239,7 @@ Normally the guest would be one of your users and a third party, to make testing
 First you need to install the CLI in your terminal:
 
 ```bash
-curl https://static.dylibso.com/cli/install.sh | sh
+curl https://static.dylibso.com/cli/install.sh | bash
 ```
 
 Start by making sure that you're logged into the `xtp` CLI. Running the command

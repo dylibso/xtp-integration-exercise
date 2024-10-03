@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import crypto from 'crypto'
+
 import { fileURLToPath } from 'node:url'
 import Fastify from 'fastify'
 import FastifyVite from '@fastify/vite'
