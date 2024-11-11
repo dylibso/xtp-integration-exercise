@@ -253,34 +253,18 @@ $ xtp auth login
 Once you've approved the login, close the browser window. Now we can add ourselves
 as a guest. We're going to use `"acme-corp"` as our guest key since we are pretending to be Acme.
 
-> **Note**: A guest key can be any unique identifier for a user that is authorized to run plugins in your app.
+> **Note**: Normally you will invite guests via the API and they have their own account. For this demo we are just going to
+add ourselves as a guest.
 
-First, let's list our apps
+In order to add yourself as a guest.
 
-```
-$ xtp app list
-  My apps
-  1. My great app (app_01j6ftcefcfshsna0wyny1k9y1)
-```
+1. Navigate to your app in the dashboard
+2. Click the `Guests` tab
+3. Click the `Add yourself` button
+4. Click the auto-generated guest key and change it to `acme-corp`
+5. Hit <enter>
 
-Then we use the app id to invite ourselves. We're using "acme-corp" as our guest key.
-
-```
-$ export XTP_APP="app_01j6ftcefcfshsna0wyny1k9y1"
-$ export XTP_TOKEN=$(xtp auth token show)
-$ curl -sL \
-  -H "authorization: Bearer $XTP_TOKEN" \
-  -H "content-type: application/json" \
-  -d '{"deliveryMethod":"link","guestKey": "acme-corp"}' \
-  -X POST \
-  https://xtp.dylibso.com/api/v1/apps/$XTP_APP/guests
-
-{"status":"ok","link":"https://xtp.dylibso.com/accept-invite?code=AZIMfs6fcnaS-j5KLGI177iMYrPpvc3PHWUR_RbHajqoSNLJZ9Fslg"}
-```
-
-Open that link in a browser to accept the guest invitation.
-
-> **Note**: Guests can also be inivited via the UI, but using the API and link process gives us more control over the end-user experience.
+You are now authencated as the guest `acme-corp` in your app and can push plug-ins into this guest key.
 
 ## Step 4: Deploy a Plugin
 
