@@ -154,6 +154,7 @@ const xtpClient = await createClient({
 
 > **Note**: Generate a token from your user view here: [https://xtp.dylibso.com/tokens](https://xtp.dylibso.com/~/tokens).
 > This is a secret. Store it in the environment variable XTP_TOKEN and restart the server.
+> $ export XTP_TOKEN="<mytoken>"
 
 Now that the client is initialized, there are two places we need to extend:
 
