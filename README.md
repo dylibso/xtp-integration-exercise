@@ -299,7 +299,7 @@ export function handleMessageImpl(input: Message): Message {
 This will get called by Yak when it gets the `/loudify` command. So all we're doing returning a new message
 uppercasing the body of the input message.
 
-Now to install the code in Yak, from the plugin directory, run these two commands:
+Now to install the code in Yak, from the plugin directory, run this command:
 
 ```
 # Build and install the plugin
